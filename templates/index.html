@@ -6,26 +6,55 @@
     </div>
 
     <div class="d-flex justify-content-center mb-3">
-      <form action="/" method="POST" class="d-flex w-50">
-        {{form.todo(placeholder="eg. Shoping, cleaning, go to the park", class="form-control mr-3")}}
-        <button type="submit" class="btn btn-primary">Submit</button>
+      <form method="POST" action="" class="d-flex w-50">
+        {{form.hidden_tag()}} {{form.todo(placeholder="eg. Shoping, cleaning, go to the park", class="form-control mr-3")}} {{form.submit(class="btn btn-primary")}}
       </form>
     </div>
     <div class="justify-content-center">
-      <table class="table">
+      <table class="table table-hover">
         <thead class="thead-dark">
           <tr>
-            <th scope="col">To do</th>
-            <th scope="col">#</th>
+            <th scope="col"><i class="fas fa-list"></i> To do</th>
+            <th scope="col"><i class="fas fa-edit"></i> Action</th>
           </tr>
         </thead>
-        <tbody class="table-striped">
-          <tr>
-            {% for todo in todos %}
-            <th scope="row">{{todo.content}}</th>
-            <th scope="row">x</th>
-            {% endfor %}
+        <tbody class="table">
+          {% for todo in todos %} {% if todo.complete %}
+          <tr style="background: rgba(0, 0, 0, 0.1);">
+            {% if todo.complete%}
+            <th scope="row"><s>{{todo.content}}</s></th>
+            {% else %}
+            <th scope="row" class="font-weight-normal">{{todo.content}}</th>
+            {% endif %}
+            <th scope="row">
+              <form action="{{url_for('update')}}" method="POST">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="defaultUnchecked" name="value" value="{{todo.id}}" />
+                  <label class="custom-control-label" for="defaultUnchecked"></label>
+                  <input type="submit" value="Update list" class="btn btn-success" />
+                </div>
+              </form>
+              <form action="{{url_for('delete')}}"></form>
+            </th>
           </tr>
+          {% else %}
+          <tr>
+            {% if todo.complete%}
+            <th scope="row"><s>{{todo.content}}</s></th>
+            {% else %}
+            <th scope="row" class="font-weight-normal">{{todo.content}}</th>
+            {% endif %}
+            <form action="{{url_for('update')}}" method="POST">
+              <th scope="row">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="defaultUnchecked" name="value" value="{{todo.id}}" />
+                  <label class="custom-control-label" for="defaultUnchecked"></label>
+                  <input type="submit" value="Update list" class="btn btn-success" />
+                </div>
+              </th>
+            </form>
+          </tr>
+          {% endif %} {% endfor %}
         </tbody>
       </table>
     </div>

@@ -1,6 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_wtf import FlaskForm
-from wtforms import StringField
+from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired, Length, AnyOf
 from flask_sqlalchemy import SQLAlchemy
 
@@ -12,6 +12,7 @@ db = SQLAlchemy(app)
 
 class InputForm(FlaskForm):
     todo = StringField('todo', validators=[InputRequired()])
+    submit = SubmitField('submit')
 
 
 class Todo(db.Model):
@@ -23,14 +24,33 @@ class Todo(db.Model):
         return f'Todo({self.id}, {self.content})'
 
 
-@app.route('/', methods=["GET", "POST"])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     form = InputForm()
     if form.validate_on_submit():
-        query = Todo(content=form.todo.data)
-        db.session.add(query)
+        todoinput = Todo(content=form.todo.data)
+        db.session.add(todoinput)
         db.session.commit()
     todos = Todo.query.all()
+    return render_template("index.html", form=form, todos=todos)
+
+
+@app.route('/update', methods=['GET', 'POST'])
+def update():
+    form = InputForm()
+    if form.validate_on_submit():
+        todoinput = Todo(content=form.todo.data)
+        db.session.add(todoinput)
+        db.session.commit()
+    todos = Todo.query.all()
+    todo_id = request.form.to_dict()["value"]
+    print(todo_id)
+    todo = Todo.query.filter_by(id=todo_id).first()
+    if todo.complete == False:
+        todo.complete = True
+    else:
+        todo.complete = False
+    db.session.commit()
     return render_template("index.html", form=form, todos=todos)
 
 
