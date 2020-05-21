@@ -28,13 +28,13 @@
             {% endif %}
             <th scope="row">
               <form action="{{url_for('update')}}" method="POST">
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="defaultUnchecked" name="value" value="{{todo.id}}" />
-                  <label class="custom-control-label" for="defaultUnchecked"></label>
-                  <input type="submit" value="Update list" class="btn btn-success" />
-                </div>
+                <input type="checkbox" class="d-none" name="value" value="{{todo.id}}" checked />
+                <input type="submit" class="btn btn-success" value="Mark as done" />
               </form>
-              <form action="{{url_for('delete')}}"></form>
+              <form action="{{url_for('update')}}" medthod="POST">
+                <input type="checkbox" class="d-none" name="value" value="{{todo.id}}" checked />
+                <input type="submit" class="btn btn-danger" value="Delete" />
+              </form>
             </th>
           </tr>
           {% else %}
@@ -46,11 +46,13 @@
             {% endif %}
             <form action="{{url_for('update')}}" method="POST">
               <th scope="row">
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="defaultUnchecked" name="value" value="{{todo.id}}" />
-                  <label class="custom-control-label" for="defaultUnchecked"></label>
-                  <input type="submit" value="Update list" class="btn btn-success" />
-                </div>
+                <form action="{{url_for('update')}}" method="POST">
+                  <input type="checkbox" class="d-none" name="value" value="{{todo.id}}" checked />
+                  <input type="submit" class="btn btn-success" />
+                </form>
+                <form action="{{url_for('update')}}" medthod="POST">
+                  <input type="submit" />
+                </form>
               </th>
             </form>
           </tr>
